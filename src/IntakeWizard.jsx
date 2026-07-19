@@ -2162,6 +2162,27 @@ function hasContent(o) {
 
   /* ------------------------------ CHROME ------------------------------ */
 
+  const startSession = (sess, data, atStep, submittedAt) => {
+    hydrated.current = false;
+    const merged = mergeIntake(DEFAULT_INTAKE, data);
+    if (submittedAt) merged.submittedAt = submittedAt;
+    hadContent.current = hasContent(merged);
+    setSession(sess);
+    setIntake(merged);
+    setStep(atStep || "coreinfo");
+    // Arm autosave only after the loaded answers are in state.
+    setTimeout(() => { hydrated.current = true; }, 0);
+  };
+
+  if (!session) {
+    return (
+      <div className="wpws-root">
+        <style>{CSS}</style>
+        <SignIn onStart={startSession} />
+      </div>
+    );
+  }
+
   return (
     <div className="wpws-root" ref={topRef}>
       <style>{CSS}</style>
